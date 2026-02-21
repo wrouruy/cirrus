@@ -11,7 +11,7 @@ Token make_token(TokenType type, const char* start, int length)
     return t;
 }
 
-Token* tokenize(const char* input, size_t* token_count)
+Token* Lexer(const char* input, size_t* token_count)
 {
     Token* tokens = malloc(1024 * sizeof(Token));
     int count = 0;
@@ -56,17 +56,17 @@ Token* tokenize(const char* input, size_t* token_count)
             continue;
         }
         if (input[i] == '+') {
-            tokens[count++] = make_token(TOKEN_PLUS, "+", 1);
+            tokens[count++] = make_token(TOKEN_ADD, "+", 1);
             i++;
             continue;
         }
         if (input[i] == '*') {
-            tokens[count++] = make_token(TOKEN_MULT, "*", 1);
+            tokens[count++] = make_token(TOKEN_MUL, "*", 1);
             i++;
             continue;
         }
         if (input[i] == '-') {
-            tokens[count++] = make_token(TOKEN_MINUS, "-", 1);
+            tokens[count++] = make_token(TOKEN_SUB, "-", 1);
             i++;
             continue;
         }
@@ -99,6 +99,15 @@ Token* tokenize(const char* input, size_t* token_count)
     *token_count = count;
     return tokens;
 }
+
+void free_lexer(Token* tokens, size_t t_count)
+{
+    for(size_t i = 0; i < t_count; i++) {
+        free(tokens[i].value);
+    }
+    free(tokens);
+}
+
 /*
 typedef struct
 {

@@ -23,9 +23,9 @@ char** get_signs(char* flag, int* counter)
 void print_help()
 {
     puts("<file.crs> -S : compile cirrus file to assembler\n"
-         "           -v : print compiler version\n"
-         "        -repo : open compiler repository (on github)\n"
-         "        -help : print this help message");
+         "    --version : print compiler version\n"
+         "       --repo : open compiler repository (on github)\n"
+         "       --help : print this help message");
 }
 
 void print_version()
@@ -47,8 +47,6 @@ void build_asm()
     int count_flags;
     char** arr_sings = get_signs("-S", &count_flags);
 
-    printf("%d\n", count_flags);
-
     // check input data
     if(count_flags > 0)
         file_src = arr_sings[0];
@@ -56,21 +54,23 @@ void build_asm()
 
     if(!file_exists(file_src))
         ThrowError("Error", "the \033[1m%s\033[0m file is not exist", file_src);
-    else if(file_type(file_src) != 1) ThrowError("Error", "input data it's not a file");
+    else if(file_type(file_src) != 1) ThrowError("Error", "input data is not a file");
 
     char* fsrc = fvalue(file_src); // get file data & record to buffer
 
     // Lexer
     size_t tokens_count; // create tokens count
-    Token* tokens = tokenize(fsrc, &tokens_count); // create list of tokens
+    Token* tokens = Lexer(fsrc, &tokens_count); // create list of tokens
 
     free(fsrc); // rm buffer
 
     // Parser
-    size_t parser_count;
-    // AST* parser_res = Parser(tokens, tokens_count, &parser_count);
-    //printAST(parser_res[0], 1);
+    size_t parser_count = 0;
+    AST* ast = Parser(tokens, tokens_count, &parser_count);
 
-    free(tokens);     // rm tokens list
-    //free(parser_res); // rm parser list
+    printAST(ast, 1);
+
+    free_lexer(tokens, tokens_count); // rm tokens
+
+    free_ast(ast); // rm ast
 }

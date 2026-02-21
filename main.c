@@ -15,6 +15,7 @@ int global_argc;
 #include "conf-reader.h"
 #include "Lexer/lexer.h"
 #include "Parser/parser.h"
+#include "Translate/asm.h"
 #include "flags.h"
 
 int main(int argc, char* argv[])
@@ -25,11 +26,9 @@ int main(int argc, char* argv[])
     flag_t flags[] = {
         { "--help", print_help    },
         { "-h",     print_help    },
-
         { "--version", print_version },
         { "-v",        print_version },
-
-        { "-repo",  open_repo     },
+        { "--repo", open_repo     },
         { "-S",     build_asm     }
     };
 

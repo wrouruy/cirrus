@@ -17,7 +17,7 @@ TokenType int_type_check(const char* str)
 
 bool is_binary_op(const TokenType type)
 {
-    if(type >= TOKEN_PLUS && type <= TOKEN_DIV)
+    if(type >= TOKEN_ADD && type <= TOKEN_DIV)
         return true;
 
     return false;

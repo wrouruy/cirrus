@@ -10,10 +10,11 @@ char* config_reader(char* conf_file, char* conf_name)
         // mini parser
         sscanf(buffer, "%s = %s", name, value);
 
-        if(strcmp(name, conf_name) == 0)
+        if(strcmp(name, conf_name) == 0){
+            fclose(f);
             return strdup(value);
+        }
     }
-    return NULL;
-
     fclose(f);
+    return NULL;
 }
