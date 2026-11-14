@@ -4,7 +4,7 @@ TARGET=cirrus
 
 SRC=src/main.c \
 	src/flag/flag.c \
-	src/flag/help.c \
+	src/flag/flags/help.c \
 	src/error/error.c
 OBJ=$(SRC:.c=.o)
 
