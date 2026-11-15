@@ -6,12 +6,11 @@
 
 void raise_error(char* err, ...) {
     va_list args;
-    int written_chars;
     char* buffer = malloc(512);
     size_t buffer_size = 512;
 
     va_start(args, err);
-    written_chars = vsnprintf(buffer, buffer_size, err, args);
+    vsnprintf(buffer, buffer_size, err, args);
     va_end(args);
 
     printf("\033[1;31merr:\033[0m %s\n", buffer);

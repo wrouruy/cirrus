@@ -5,13 +5,16 @@ TARGET=cirrus
 SRC=src/main.c \
 	src/flag/flag.c \
 	src/error/error.c \
-	src/flag/flags/help.c
+	src/flag/flags/help.c \
+	src/flag/flags/build.c
+# 	src/lexer/lexer.c
 OBJ=$(SRC:.c=.o)
 
 $(TARGET): $(OBJ)
 	$(CC) $(CCFLAGS) -o $(TARGET) $(OBJ)
+	rm -f $(OBJ)
 
-%.o: %.cpp
+%.o: %.c
 	$(CC) $(CCFLAGS) -c $< -o $@
 
 clean:

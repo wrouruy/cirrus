@@ -7,7 +7,7 @@
 #include "flag_list.h"
 
 static flag_t *flag_by_fullname (char* flag) {
-    for (int i = 0; i < flags_len; i++) {
+    for (size_t i = 0; i < flags_len; i++) {
         if (strcmp(flags[i].name, flag) == 0)
             return &flags[i];
     }
@@ -15,7 +15,7 @@ static flag_t *flag_by_fullname (char* flag) {
 }
 
 static flag_t* flag_by_shortname(char flag) {
-    for (int i = 0; i < flags_len; i++) {
+    for (size_t i = 0; i < flags_len; i++) {
         if (flags[i].shorten_name == flag)
             return &flags[i];
     }

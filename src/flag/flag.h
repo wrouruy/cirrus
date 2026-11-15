@@ -1,6 +1,7 @@
 #pragma once
 
 void print_help(char* _[], int);
+void build(char* _[], int);
 
 typedef struct {
     char* name;
