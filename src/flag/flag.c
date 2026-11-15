@@ -4,13 +4,9 @@
 
 #include "flag.h"
 #include "../error/error.h"
+#include "flag_list.h"
 
-static Flag flags[] = {
-    { "--help", 'h', print_help }
-};
-static size_t flags_len = sizeof(flags) / sizeof(flags[0]);
-
-static Flag *flag_by_fullname (char* flag) {
+static flag_t *flag_by_fullname (char* flag) {
     for (int i = 0; i < flags_len; i++) {
         if (strcmp(flags[i].name, flag) == 0)
             return &flags[i];
@@ -18,7 +14,7 @@ static Flag *flag_by_fullname (char* flag) {
     return NULL;
 }
 
-static Flag* flag_by_shortname(char flag) {
+static flag_t* flag_by_shortname(char flag) {
     for (int i = 0; i < flags_len; i++) {
         if (flags[i].shorten_name == flag)
             return &flags[i];
@@ -30,8 +26,8 @@ void parse_flags(int argc, char* argv[]) {
     char *params[argc] = {};
     int params_len = 0;
 
-    ll_Flag *f = malloc(sizeof(ll_Flag));
-    ll_Flag *fnext = f;
+    ll_flag *f = malloc(sizeof(ll_flag));
+    ll_flag *fnext = f;
 
     for (int i = 1; i < argc; i++) {
         if (argv[i][0] == '-') {
@@ -40,7 +36,7 @@ void parse_flags(int argc, char* argv[]) {
                 
                 if (fnext->data == NULL)
                     raise_error("unknown flag \"%s\"", argv[i]);
-                fnext->next = malloc(sizeof(ll_Flag));
+                fnext->next = malloc(sizeof(ll_flag));
                 
                 fnext = fnext->next;
             } else { // if flag is shorten
@@ -50,7 +46,7 @@ void parse_flags(int argc, char* argv[]) {
                     if (fnext->data == NULL)
                         raise_error("unknown flag \"-%c\"", *p);
 
-                    fnext->next = malloc(sizeof(ll_Flag));
+                    fnext->next = malloc(sizeof(ll_flag));
                     fnext = fnext->next;
                     p++;
                 }
@@ -66,7 +62,7 @@ void parse_flags(int argc, char* argv[]) {
         raise_error("unexpected parameters without any flags");
 
     while(f->next != NULL) {
-        ll_Flag* fnext = f->next;
+        ll_flag* fnext = f->next;
         f->data->func(params, params_len);
 
         free(f);
