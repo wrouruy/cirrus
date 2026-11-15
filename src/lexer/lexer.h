@@ -24,3 +24,4 @@ typedef struct {
 } lex_token_t;
 
 lex_token_t* tokenize(const char* input, size_t size, size_t* count);
+void lex_free(lex_token_t* t, size_t size);

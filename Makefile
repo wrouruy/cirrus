@@ -1,13 +1,15 @@
 CC=gcc
-CCFLAGS=-std=c17 -Wall -Wextra
+CCFLAGS=-std=c17 -Wall -Wextra 
 TARGET=cirrus
 
 SRC=src/main.c \
 	src/flag/flag.c \
 	src/error/error.c \
 	src/flag/flags/help.c \
-	src/flag/flags/build.c
-# 	src/lexer/lexer.c
+	src/flag/flags/build.c \
+	src/lexer/tokenize.c \
+	src/lexer/free.c \
+	src/file/file.c
 OBJ=$(SRC:.c=.o)
 
 $(TARGET): $(OBJ)
