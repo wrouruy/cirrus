@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stddef.h>
+
 typedef enum {
     lexer_ident,
 
@@ -23,5 +25,5 @@ typedef struct {
     lex_type_t type;
 } lex_token_t;
 
-lex_token_t* tokenize(const char* input, size_t size, size_t* count);
+lex_token_t* tokenize(const char* file, const char* input, size_t size, size_t* count);
 void lex_free(lex_token_t* t, size_t size);

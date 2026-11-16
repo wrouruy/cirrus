@@ -17,7 +17,7 @@ void build (char* params[], int params_len) {
         raise_error("file \"%s\" does not exist", filename);
 
     size_t token_size;
-    lex_token_t* token = tokenize(fval, fsize, &token_size);
+    lex_token_t* token = tokenize(filename, fval, fsize, &token_size);
 
     free(fval);
 

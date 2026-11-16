@@ -1,35 +1,99 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdbool.h>
+#include <stdio.h>
 
+#include "../error/error.h"
 #include "lexer.h"
 
-static lex_token_t make_token(lex_type_t type, const char* start, int len) {
+static void untermined_str_err(const char* file, const char* input, size_t index);
+
+static lex_token_t make_token(lex_type_t type, const char* start, size_t len) {
     lex_token_t t;
     t.type = type;
     t.value = malloc(len + 1);
-    strncpy(t.value, start, len);
+    memcpy(t.value, start, len);
     t.value[len] = '\0';
 
     return t;
 }
 
-lex_token_t* tokenize(const char* input, size_t size, size_t* count) {
-    lex_token_t* res = malloc(sizeof(lex_token_t) * size);
+static const char opers[] = { '+', '-', '*', '/', '=', '(', ')' };
+static const char types[] = { lexer_add, lexer_sub, lexer_mul, lexer_div, lexer_equal, lexer_lparen, lexer_rparen };
+
+static bool tokenize_operation (
+    char* c,
+    lex_token_t* t,
+    size_t* count
+){
+    for (size_t i = 0; i < sizeof(opers) / sizeof(opers[0]); i++) {
+        if (*c == opers[i]) {
+            t[*count] = make_token(types[i], c, 1);
+            (*count)++;
+            return true;
+        }
+    }
+    return false;
+}
+
+lex_token_t* tokenize(const char* file, const char* input, size_t size, size_t* count) {
+    lex_token_t* res = malloc(sizeof(lex_token_t) * (size + 1));
     *count = 0;
 
-    for (size_t i = 0; input[i] != '\0';) {
-        if (isspace(input[i])) {
+    for (size_t i = 0; i < size && input[i] != '\0';) {
+        char c = input[i];
+
+        if (isspace(c)) {
             i++;
             continue;
         }
 
-        if (isdigit(input[i])) {
+        if (c == '#') {
+            while (i < size && input[i] != '\n') i++;
+            continue;
+        }
+
+        // ident
+        if (isalpha(c) || input[i] == '_') {
             size_t start = i;
-            while (isdigit(input[i])) i++;
+            while (i < size && (isalnum((unsigned char)input[i]) || input[i] == '_')) i++;
+            res[*count] = make_token(lexer_ident, &input[start], i - start);
+            (*count)++;
+            continue;
+        }
+
+        // operations
+        if (tokenize_operation(&c, res, count)) {
+            i++;
+            continue;
+        }
+
+        // int
+        if (isdigit(c)) {
+            size_t start = i;
+            while (i < size && isdigit(input[i])) i++;
             res[*count] = make_token(lexer_int, &input[start], i - start);
             (*count)++;
+            continue;
         }
+
+        // string
+        if (c == '"') {
+            size_t start = ++i;
+            while (i < size && input[i] != '"') {
+                if (input[i] == '\n' || input[i] == '\0')
+                    untermined_str_err(file, input, i);
+                i++;
+            }
+            if (i >= size)
+                untermined_str_err(file, input, i);
+            res[*count] = make_token(lexer_str, &input[start], i - start);
+            (*count)++;
+            i++;
+            continue;
+        }
+
         i++;
     }
 
@@ -37,4 +101,11 @@ lex_token_t* tokenize(const char* input, size_t size, size_t* count) {
     (*count)++;
 
     return res;
+}
+
+
+/* error messages */
+
+static void untermined_str_err(const char* file, const char* input, size_t index) {
+    raise_err_code(file, input, index, "unterminated string literal");
 }
