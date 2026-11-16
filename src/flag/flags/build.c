@@ -22,7 +22,7 @@ void build (char* params[], int params_len) {
     free(fval);
 
     for (size_t i = 0; i < token_size; i++) {
-        printf("%ld : val: '%s' ; type: %d\n", i, token[i].value, token[i].type);
+        printf("%ld : val: '%s' ; type: %d ; kw: %d\n", i, token[i].value, token[i].type, token[i].kw);
     }
 
     lex_free(token, token_size);

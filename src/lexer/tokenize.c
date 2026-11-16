@@ -6,12 +6,14 @@
 
 #include "../error/error.h"
 #include "lexer.h"
+#include "keywords.h"
 
 static void untermined_str_err(const char* file, const char* input, size_t index);
 
 static lex_token_t make_token(lex_type_t type, const char* start, size_t len) {
     lex_token_t t;
     t.type = type;
+    t.kw = lexer_kw_none;
     t.value = malloc(len + 1);
     memcpy(t.value, start, len);
     t.value[len] = '\0';
@@ -21,6 +23,15 @@ static lex_token_t make_token(lex_type_t type, const char* start, size_t len) {
 
 static const char opers[] = { '+', '-', '*', '/', '=', '(', ')' };
 static const char types[] = { lexer_add, lexer_sub, lexer_mul, lexer_div, lexer_equal, lexer_lparen, lexer_rparen };
+
+static lexer_kw_t keyword_lookup(const char* start, size_t len) {
+    for (size_t i = 0; i < keywords_len; i++) {
+        if (strlen(keywords[i].word) == len &&
+            memcmp(keywords[i].word, start, len) == 0)
+            return keywords[i].kw;
+    }
+    return lexer_kw_none;
+}
 
 static bool tokenize_operation (
     char* c,
@@ -55,10 +66,18 @@ lex_token_t* tokenize(const char* file, const char* input, size_t size, size_t* 
         }
 
         // ident
-        if (isalpha(c) || input[i] == '_') {
+        if (isalpha((unsigned char)c) || c == '_') {
             size_t start = i;
             while (i < size && (isalnum((unsigned char)input[i]) || input[i] == '_')) i++;
-            res[*count] = make_token(lexer_ident, &input[start], i - start);
+            size_t len = i - start;
+
+            lexer_kw_t kw = keyword_lookup(&input[start], len);
+            if (kw != lexer_kw_none) {
+                res[*count] = make_token(lexer_keyword, &input[start], len);
+                res[*count].kw = kw;
+            } else {
+                res[*count] = make_token(lexer_ident, &input[start], len);
+            }
             (*count)++;
             continue;
         }
