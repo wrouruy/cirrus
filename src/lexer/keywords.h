@@ -2,7 +2,7 @@
 
 typedef struct {
     const char* word;
-    lexer_kw_t kw;
+    lex_kw_t kw;
 } keyword_t;
 
 const keyword_t keywords[] = {

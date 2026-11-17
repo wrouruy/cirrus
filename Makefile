@@ -9,7 +9,9 @@ SRC=src/main.c \
 	src/flag/flags/build.c \
 	src/lexer/tokenize.c \
 	src/lexer/free.c \
-	src/file/file.c
+	src/file/file.c \
+	src/ast/parser.c \
+	src/ast/free.c
 OBJ=$(SRC:.c=.o)
 
 $(TARGET): $(OBJ)

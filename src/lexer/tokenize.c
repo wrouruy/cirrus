@@ -24,7 +24,7 @@ static lex_token_t make_token(lex_type_t type, const char* start, size_t len) {
 static const char opers[] = { '+', '-', '*', '/', '=', '(', ')' };
 static const char types[] = { lexer_add, lexer_sub, lexer_mul, lexer_div, lexer_equal, lexer_lparen, lexer_rparen };
 
-static lexer_kw_t keyword_lookup(const char* start, size_t len) {
+static lex_kw_t keyword_lookup(const char* start, size_t len) {
     for (size_t i = 0; i < keywords_len; i++) {
         if (strlen(keywords[i].word) == len &&
             memcmp(keywords[i].word, start, len) == 0)
@@ -71,7 +71,7 @@ lex_token_t* tokenize(const char* file, const char* input, size_t size, size_t* 
             while (i < size && (isalnum((unsigned char)input[i]) || input[i] == '_')) i++;
             size_t len = i - start;
 
-            lexer_kw_t kw = keyword_lookup(&input[start], len);
+            lex_kw_t kw = keyword_lookup(&input[start], len);
             if (kw != lexer_kw_none) {
                 res[*count] = make_token(lexer_keyword, &input[start], len);
                 res[*count].kw = kw;
@@ -92,7 +92,7 @@ lex_token_t* tokenize(const char* file, const char* input, size_t size, size_t* 
         if (isdigit(c)) {
             size_t start = i;
             while (i < size && isdigit(input[i])) i++;
-            res[*count] = make_token(lexer_int, &input[start], i - start);
+            res[*count] = make_token(lexer_num, &input[start], i - start);
             (*count)++;
             continue;
         }

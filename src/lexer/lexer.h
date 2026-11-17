@@ -14,9 +14,8 @@ typedef enum {
     lexer_equal,
     lexer_lparen,
     lexer_rparen,
-    lexer_curly_br,
 
-    lexer_int,
+    lexer_num,
     lexer_str,
 
     lexer_eof
@@ -41,12 +40,12 @@ typedef enum {
 
     lexer_kw_true,
     lexer_kw_false,
-} lexer_kw_t;
+} lex_kw_t;
 
 typedef struct {
     char* value;
     lex_type_t type;
-    lexer_kw_t kw;
+    lex_kw_t kw;
 } lex_token_t;
 
 lex_token_t* tokenize(const char* file, const char* input, size_t size, size_t* count);

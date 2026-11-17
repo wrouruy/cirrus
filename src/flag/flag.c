@@ -26,7 +26,7 @@ void parse_flags(int argc, char* argv[]) {
     char *params[argc] = {};
     int params_len = 0;
 
-    ll_flag *f = malloc(sizeof(ll_flag));
+    ll_flag *f = calloc(1, sizeof(ll_flag));
     ll_flag *fnext = f;
 
     for (int i = 1; i < argc; i++) {
@@ -36,7 +36,7 @@ void parse_flags(int argc, char* argv[]) {
                 
                 if (fnext->data == NULL)
                     raise_error("unknown flag \"%s\"", argv[i]);
-                fnext->next = malloc(sizeof(ll_flag));
+                fnext->next = calloc(1, sizeof(ll_flag));
                 
                 fnext = fnext->next;
             } else { // if flag is shorten
@@ -46,7 +46,7 @@ void parse_flags(int argc, char* argv[]) {
                     if (fnext->data == NULL)
                         raise_error("unknown flag \"-%c\"", *p);
 
-                    fnext->next = malloc(sizeof(ll_flag));
+                    fnext->next = calloc(1, sizeof(ll_flag));
                     fnext = fnext->next;
                     p++;
                 }
